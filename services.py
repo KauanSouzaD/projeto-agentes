@@ -5,10 +5,12 @@ from datetime import datetime
 import requests
 
 from adaptive_agent import AdaptiveAgent
+from cognitive_agent import CognitiveAgent
 from config import SIMULACAO, estado_quarto, placas_registradas
 
 
 agente_adaptativo = AdaptiveAgent()
+agente_cognitivo = CognitiveAgent()
 
 ACTION_ENDPOINTS = {
     "abrir_janela": ("janela", "/abrir", {"janela_aberta": 1}),
@@ -57,9 +59,24 @@ def processar_sensores(dados, now=None):
         value = estado_quarto[name]
         estado_quarto[name] = value if isinstance(value, bool) else str(value).lower() in ("1", "true", "sim")
 
-    if estado_quarto.get("modo_agente") != "adaptativo":
-        return None
-    return agente_adaptativo.run(estado_quarto, executar_acao, now)
+    mode = estado_quarto.get("modo_agente")
+    if mode == "cognitivo":
+        return agente_cognitivo.run(estado_quarto, executar_acao, now)
+    if mode == "adaptativo":
+        return agente_adaptativo.run(estado_quarto, executar_acao, now)
+    return None
+
+
+def ajustar(temp_str, umid_str, dormir=None, aberta=None):
+    """Compatibilidade com GET /ajustar do Servidor original enviado."""
+    if temp_str is None or umid_str is None:
+        raise ValueError("temperatura e umidade são obrigatórias")
+    data = {"temperatura": temp_str, "umidade": umid_str}
+    if dormir is not None:
+        data["dormir"] = dormir
+    if aberta is not None:
+        data["statusjanela"] = aberta
+    return processar_sensores(data)
 
 
 def registrar_feedback(reward):
@@ -75,4 +92,3 @@ def feedback_por_correcao(manual_action, seconds=120):
         return None
     elapsed = datetime.now() - datetime.fromisoformat(decision.timestamp)
     return registrar_feedback(-1) if elapsed.total_seconds() <= seconds else None
-

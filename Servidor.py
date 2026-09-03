@@ -38,6 +38,25 @@ def register_ip():
     return jsonify({"status": "sucesso"})
 
 
+@app.get("/ajustar")
+def adjust():
+    """Rota conservada do Servidor.py original."""
+    try:
+        decision = services.ajustar(
+            request.args.get("temperatura"), request.args.get("umidade"),
+            request.args.get("dormir"), request.args.get("aberta"),
+        )
+    except (TypeError, ValueError) as error:
+        return jsonify({"erro": str(error)}), 400
+    return jsonify({"status": "sucesso", "decisao": asdict(decision) if decision else None})
+
+
+@app.get("/status")
+def status():
+    return jsonify({"estado_atual": estado_quarto,
+                    "ultima_decisao": services.agente_cognitivo.status()})
+
+
 @app.post("/monitoramento")
 def monitoring():
     data = request.get_json(silent=True)

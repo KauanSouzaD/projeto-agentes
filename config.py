@@ -5,7 +5,7 @@ import os
 placas_registradas = {}
 
 estado_quarto = {
-    "modo_agente": os.getenv("MODO_AGENTE", "adaptativo"),
+    "modo_agente": os.getenv("MODO_AGENTE", "cognitivo"),
     "temperatura_atual": 24.0,
     "umidade_atual": 50.0,
     "luminosidade": 0.0,

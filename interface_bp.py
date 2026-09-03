@@ -14,6 +14,9 @@ inter_bp = Blueprint("interf", __name__)
 
 @inter_bp.get("/agente")
 def painel_agente():
+    if estado_quarto.get("modo_agente") == "cognitivo":
+        return jsonify({"estado_atual": estado_quarto,
+                        "ultima_decisao": services.agente_cognitivo.status()})
     return jsonify({"estado_atual": estado_quarto, **services.agente_adaptativo.status()})
 
 

@@ -1,8 +1,9 @@
-# Quarto inteligente — agente adaptativo
+# Quarto inteligente — agentes cognitivo e adaptativo
 
 O projeto usa Flask e preserva o padrão do sistema original: sensores atualizam
 `estado_quarto`, o serviço decide e as ações são enviadas por HTTP às placas.
-O modo padrão é `adaptativo`; configure `MODO_AGENTE` para integrar outros modos.
+O modo padrão é `cognitivo`; use `MODO_AGENTE=adaptativo` para selecionar o
+agente com aprendizagem já existente.
 
 ## PEAS
 
@@ -15,8 +16,21 @@ O modo padrão é `adaptativo`; configure `MODO_AGENTE` para integrar outros mod
 ## Agentes
 
 O código-base recebido contém um agente reativo no qual regras ligam o ar ou
-movem a janela diretamente. Esta entrega implementa o agente adaptativo pedido.
-O agente cognitivo descrito na especificação não faz parte desta entrega.
+movem a janela diretamente. O agente cognitivo implementado em
+`cognitive_agent.py` não reage com uma regra isolada: ele gera cinco planos,
+prevê a temperatura resultante, calcula a utilidade e só então executa o melhor.
+
+```text
+utilidade = 20 - 4 × |temperatura prevista - 24| - 2 × consumo
+            + bônus de luz/umidade/presença
+            - penalidades de chuva, segurança e conflitos
+```
+
+Os planos avaliados são: não fazer nada, ventilador, janela, janela com
+ventilador e ar-condicionado. Chuva, presença externa ou conflito entre janela
+e ar recebem penalidade de 100 pontos. O plano do ar sempre fecha a janela antes
+de ligá-lo. Estado, opções, parcelas da utilidade, escolha e motivo são impressos
+no terminal e expostos por `GET /interf/agente` e `GET /status`.
 
 O agente adaptativo transforma cada leitura em um estado discreto composto por:
 faixa de horário, temperatura, luminosidade, chuva, presenças e umidade. Ele
@@ -47,7 +61,7 @@ fica em `data/q_table.json` e é recarregada ao reiniciar.
 ```bash
 python -m venv .venv
 .venv/bin/pip install -r requirements.txt
-SIMULACAO=1 .venv/bin/python Servidor.py
+SIMULACAO=1 MODO_AGENTE=cognitivo .venv/bin/python Servidor.py
 ```
 
 Envie sensores reais ou simulados:
@@ -60,6 +74,20 @@ curl -X POST http://localhost:5050/interf/feedback \
   -H 'Content-Type: application/json' -d '{"avaliacao":"nao gostei"}'
 curl -X POST http://localhost:5050/interf/acao/fechar_janela
 ```
+
+Para demonstrar o cenário cognitivo (29 °C, alvo 24 °C, sem chuva e janela
+fechada):
+
+```bash
+curl -X POST http://localhost:5050/monitoramento \
+  -H 'Content-Type: application/json' \
+  -d '{"temperatura":29,"umidade":50,"luminosidade":70,"chuva":false,"statusjanela":0,"presencainterna":true,"presencaexterna":false}'
+```
+
+O JSON e o terminal mostram as cinco alternativas e suas utilidades. Com os
+pesos atuais, o ar-condicionado vence porque alcança 24 °C, apesar do maior
+custo energético. Altere chuva para `true` para observar a penalização das
+opções que abrem a janela.
 
 Para a apresentação, simule luminosidade alta às 6h (ajustando o relógio do
 sistema ou usando o teste), rejeite a abertura três vezes e repita o mesmo
