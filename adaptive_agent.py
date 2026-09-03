@@ -18,6 +18,22 @@ ACTIONS = (
     "nao_fazer_nada",
 )
 
+AMBIGUITY_THRESHOLD = 0.5  # diferença mínima entre a 1ª e a 2ª ação pra considerar "certeza"
+
+ACTION_LABELS = {
+    "abrir_janela": "abrir a janela",
+    "fechar_janela": "fechar a janela",
+    "ligar_ar": "ligar o ar-condicionado",
+    "desligar_ar": "desligar o ar-condicionado",
+    "ligar_ventilador": "ligar o ventilador",
+    "desligar_ventilador": "desligar o ventilador",
+    "ligar_lampada": "ligar a lâmpada",
+    "desligar_lampada": "desligar a lâmpada",
+    "ligar_umidificador": "ligar o umidificador",
+    "desligar_umidificador": "desligar o umidificador",
+    "nao_fazer_nada": "não fazer nada",
+}
+
 
 @dataclass
 class Decision:
@@ -31,6 +47,8 @@ class Decision:
     evaluated_actions: list[dict]
     timestamp: str
     reward: float | None = None
+    pergunta: str | None = None
+    candidatos_pergunta: list[str] | None = None
 
 
 class AdaptiveAgent:
@@ -164,19 +182,34 @@ class AdaptiveAgent:
             base, reason = self._base_score(action, sensor_state)
             learned = float(values.get(action, 0.0))
             evaluated.append({"acao": action, "utilidade_base": base,
-                              "valor_aprendido": round(learned, 3),
-                              "utilidade_total": round(base + 1.5 * learned, 3),
-                              "motivo": reason})
-        if random.random() < self.epsilon:
+                          "valor_aprendido": round(learned, 3),
+                          "utilidade_total": round(base + 1.5 * learned, 3),
+                          "motivo": reason})
+
+        pergunta = None
+        candidatos = None
+        explorou = random.random() < self.epsilon
+        if explorou:
             selected = random.choice(evaluated)
             selected = {**selected, "motivo": selected["motivo"] + "; exploração"}
         else:
-            selected = max(evaluated, key=lambda item: item["utilidade_total"])
+            ranking = sorted(evaluated, key=lambda item: item["utilidade_total"], reverse=True)
+            selected = ranking[0]
+            if len(ranking) > 1:
+                diferenca = ranking[0]["utilidade_total"] - ranking[1]["utilidade_total"]
+                if diferenca < AMBIGUITY_THRESHOLD and ranking[0]["acao"] != ranking[1]["acao"]:
+                    candidatos = [ranking[0]["acao"], ranking[1]["acao"]]
+                    pergunta = (
+                        f"Não tenho certeza: devo {ACTION_LABELS[candidatos[0]]} "
+                        f"ou {ACTION_LABELS[candidatos[1]]}?"
+                    )
+
         decision = Decision(
             key, compact, selected["acao"], selected["utilidade_base"],
             selected["valor_aprendido"], selected["utilidade_total"],
             selected["motivo"], evaluated,
             (now or datetime.now()).isoformat(timespec="seconds"),
+            pergunta=pergunta, candidatos_pergunta=candidatos,
         )
         self.last_decision = decision
         self._print_decision(decision)
@@ -184,6 +217,8 @@ class AdaptiveAgent:
 
     def run(self, sensor_state, executor: Callable[[str], object], now=None):
         decision = self.decide(sensor_state, now)
+        if decision.pergunta:
+            return decision
         executor(decision.action)
         return decision
 
@@ -200,6 +235,37 @@ class AdaptiveAgent:
             decision.learned_value = state_values[decision.action]
             self._save()
         return state_values[decision.action]
+
+    def responder_pergunta(self, resposta: str, executor):
+        decision = self.last_decision
+        if not decision or not decision.pergunta:
+            raise ValueError("Não há pergunta pendente para responder.")
+
+        resposta_normalizada = resposta.strip().lower()
+        escolhida = None
+        for acao in decision.candidatos_pergunta:
+            if ACTION_LABELS[acao].lower() in resposta_normalizada or acao in resposta_normalizada:
+                escolhida = acao
+                break
+        if escolhida is None:
+            # fallback: mantém a que já tinha maior pontuação
+            escolhida = decision.candidatos_pergunta[0]
+
+        executor(escolhida)
+
+        # aprendizado: reforça a ação escolhida, penaliza levemente a alternativa
+        with self._lock:
+            state_values = self.q_table.setdefault(decision.state_key, {})
+            for acao in decision.candidatos_pergunta:
+                alvo = 1.0 if acao == escolhida else -0.3
+                old = float(state_values.get(acao, 0.0))
+                state_values[acao] = round(old + self.alpha * (alvo - old), 6)
+            self._save()
+
+        decision.action = escolhida
+        decision.pergunta = None
+        decision.reward = 1.0
+        return decision
 
     def status(self):
         return {

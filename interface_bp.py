@@ -49,3 +49,15 @@ def simulate():
     decision = services.processar_sensores(data)
     return jsonify({"estado_atual": estado_quarto,
                     "decisao": asdict(decision) if decision else None})
+
+@inter_bp.post("/responder")
+def responder_pergunta():
+    data = request.get_json(silent=True) or request.form
+    resposta = data.get("resposta")
+    if not resposta:
+        return jsonify({"erro": "campo 'resposta' é obrigatório"}), 400
+    try:
+        decision = services.processar_resposta_pergunta(resposta)
+    except (TypeError, ValueError) as error:
+        return jsonify({"erro": str(error)}), 400
+    return jsonify({"decisao": asdict(decision)})

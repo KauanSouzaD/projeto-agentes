@@ -20,7 +20,8 @@ def home():
         "projeto": "Quarto inteligente",
         "modo_agente": estado_quarto["modo_agente"],
         "rotas": ["POST /monitoramento", "GET /interf/agente",
-                  "POST /interf/feedback", "POST /interf/simular"],
+                  "POST /interf/feedback", "POST /interf/simular",
+                  "POST /interf/responder"],
     })
 
 

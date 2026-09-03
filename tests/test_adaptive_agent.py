@@ -40,6 +40,36 @@ class AdaptiveAgentTests(unittest.TestCase):
             self.assertLess(opening["utilidade_total"], -90)
             self.assertEqual(decision.action, "fechar_janela")
 
+    def test_pergunta_em_estado_ambiguo(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "q.json"
+            agent = AdaptiveAgent(path)
+            moment = datetime(2026, 8, 28, 14)  # tarde
+            estado = morning_state(temperatura_atual=27.6, luminosidade=45)
+
+            decision = agent.decide(estado, moment)
+
+            self.assertIsNotNone(decision.pergunta)
+            self.assertEqual(len(decision.candidatos_pergunta), 2)
+
+            executadas = []
+            resultado = agent.responder_pergunta(
+                "pode ligar o ventilador", executadas.append
+            )
+
+            self.assertEqual(executadas, ["ligar_ventilador"])
+            self.assertIsNone(resultado.pergunta)
+
+    def test_chuva_nao_gera_pergunta(self):
+        with tempfile.TemporaryDirectory() as directory:
+            agent = AdaptiveAgent(Path(directory) / "q.json")
+            moment = datetime(2026, 8, 28, 14)
+            estado = morning_state(chuva=True)
+
+            decision = agent.decide(estado, moment)
+
+            self.assertIsNone(decision.pergunta)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -76,3 +76,7 @@ def feedback_por_correcao(manual_action, seconds=120):
     elapsed = datetime.now() - datetime.fromisoformat(decision.timestamp)
     return registrar_feedback(-1) if elapsed.total_seconds() <= seconds else None
 
+def processar_respostas_perguntas(resposta)
+"""Recebe a resposta do usuário a uma pergunta de esclarecimento do agente."""
+decision = agente_adaptativo.responder_pergunta(resposta, executar_acao)
+return decision
