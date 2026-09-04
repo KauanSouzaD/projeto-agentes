@@ -182,9 +182,9 @@ class AdaptiveAgent:
             base, reason = self._base_score(action, sensor_state)
             learned = float(values.get(action, 0.0))
             evaluated.append({"acao": action, "utilidade_base": base,
-                          "valor_aprendido": round(learned, 3),
-                          "utilidade_total": round(base + 1.5 * learned, 3),
-                          "motivo": reason})
+                              "valor_aprendido": round(learned, 3),
+                              "utilidade_total": round(base + 1.5 * learned, 3),
+                              "motivo": reason})
 
         pergunta = None
         candidatos = None
@@ -222,6 +222,35 @@ class AdaptiveAgent:
         executor(decision.action)
         return decision
 
+    def decidir_e_agir(self, sensor_state, executor, simulador=None, now=None):
+        """Decide e executa sempre, sem depender de resposta humana.
+        Se estiver em dúvida, simula o resultado de cada candidata e
+        escolhe/aprende sozinho antes de agir."""
+        decision = self.decide(sensor_state, now)
+
+        if decision.pergunta and simulador:
+            prever_estado, avaliar_resultado = simulador
+            notas = {}
+            for acao in decision.candidatos_pergunta:
+                previsto = prever_estado(sensor_state, acao)
+                notas[acao] = avaliar_resultado(previsto)
+            escolhida = max(notas, key=notas.get)
+
+            with self._lock:
+                state_values = self.q_table.setdefault(decision.state_key, {})
+                for acao, nota in notas.items():
+                    alvo = 1.0 if acao == escolhida else -0.3
+                    old = float(state_values.get(acao, 0.0))
+                    state_values[acao] = round(old + self.alpha * (alvo - old), 6)
+                self._save()
+
+            decision.action = escolhida
+            decision.reason += f"; resolvido por simulação (notas={notas})"
+            decision.pergunta = None
+
+        executor(decision.action)
+        return decision
+
     def feedback(self, reward):
         if not self.last_decision:
             raise ValueError("Ainda não existe uma decisão para avaliar.")
@@ -235,6 +264,20 @@ class AdaptiveAgent:
             decision.learned_value = state_values[decision.action]
             self._save()
         return state_values[decision.action]
+
+    def aprender_com_resultado_real(self, estado_antes, decisao, estado_depois, avaliar_resultado):
+        """Compara o estado real antes/depois de uma ação e gera uma
+        recompensa automática, sem nenhuma intervenção humana."""
+        nota_antes = avaliar_resultado(estado_antes)
+        nota_depois = avaliar_resultado(estado_depois)
+        reward = round(nota_depois - nota_antes, 3)
+
+        with self._lock:
+            state_values = self.q_table.setdefault(decisao.state_key, {})
+            old = float(state_values.get(decisao.action, 0.0))
+            state_values[decisao.action] = round(old + self.alpha * (reward - old), 6)
+            self._save()
+        return reward
 
     def responder_pergunta(self, resposta: str, executor):
         decision = self.last_decision
@@ -273,6 +316,7 @@ class AdaptiveAgent:
             "estados_aprendidos": len(self.q_table),
             "tabela_q": self.q_table,
         }
+
 
     @staticmethod
     def _print_decision(decision):

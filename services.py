@@ -6,9 +6,13 @@ import requests
 
 from adaptive_agent import AdaptiveAgent
 from config import SIMULACAO, estado_quarto, placas_registradas
+from simulador import prever_estado, avaliar_resultado
 
 
 agente_adaptativo = AdaptiveAgent()
+
+_ultimo_estado_antes = None
+_ultima_decisao = None
 
 ACTION_ENDPOINTS = {
     "abrir_janela": ("janela", "/abrir", {"janela_aberta": 1}),
@@ -39,9 +43,11 @@ def executar_acao(action):
     estado_quarto.update(changes)
     return {"executada": True, "simulacao": not bool(ip)}
 
-
+#processar sensores
 def processar_sensores(dados, now=None):
     """Recebe leituras reais ou simuladas e executa uma decisão."""
+    global _ultimo_estado_antes, _ultima_decisao
+
     aliases = {
         "temperatura": "temperatura_atual", "umidade": "umidade_atual",
         "statusjanela": "janela_aberta", "presencainterna": "presenca_interna",
@@ -59,8 +65,18 @@ def processar_sensores(dados, now=None):
 
     if estado_quarto.get("modo_agente") != "adaptativo":
         return None
-    return agente_adaptativo.run(estado_quarto, executar_acao, now)
 
+    if _ultimo_estado_antes is not None and _ultima_decisao is not None:
+        agente_adaptativo.aprender_com_resultado_real(
+            _ultimo_estado_antes, _ultima_decisao, dict(estado_quarto), avaliar_resultado
+        )
+
+    _ultimo_estado_antes = dict(estado_quarto)
+    decision = agente_adaptativo.decidir_e_agir(
+        estado_quarto, executar_acao, simulador=(prever_estado, avaliar_resultado), now=now
+    )
+    _ultima_decisao = decision
+    return decision
 
 def registrar_feedback(reward):
     value = agente_adaptativo.feedback(reward)
@@ -76,7 +92,7 @@ def feedback_por_correcao(manual_action, seconds=120):
     elapsed = datetime.now() - datetime.fromisoformat(decision.timestamp)
     return registrar_feedback(-1) if elapsed.total_seconds() <= seconds else None
 
-def processar_respostas_perguntas(resposta)
-"""Recebe a resposta do usuário a uma pergunta de esclarecimento do agente."""
-decision = agente_adaptativo.responder_pergunta(resposta, executar_acao)
-return decision
+def processar_respostas_perguntas(resposta):
+    """Recebe a resposta do usuário a uma pergunta de esclarecimento do agente."""
+    decision = agente_adaptativo.responder_pergunta(resposta, executar_acao)
+    return decision

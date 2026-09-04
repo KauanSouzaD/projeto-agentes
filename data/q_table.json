@@ -1,0 +1,206 @@
+{
+  "horario=tarde|temperatura=confortavel|luminosidade=alta|chuva=False|presenca_interna=True|presenca_externa=False|umidade=baixa": {
+    "abrir_janela": 0.4,
+    "ligar_umidificador": -0.12
+  },
+  "horario=tarde|temperatura=confortavel|luminosidade=baixa|chuva=False|presenca_interna=False|presenca_externa=False|umidade=adequada": {
+    "abrir_janela": -0.12,
+    "nao_fazer_nada": 0.4
+  },
+  "horario=tarde|temperatura=confortavel|luminosidade=baixa|chuva=False|presenca_interna=False|presenca_externa=False|umidade=alta": {
+    "abrir_janela": 0.64,
+    "nao_fazer_nada": -0.192
+  },
+  "horario=tarde|temperatura=confortavel|luminosidade=baixa|chuva=False|presenca_interna=False|presenca_externa=False|umidade=baixa": {
+    "abrir_janela": -0.12,
+    "nao_fazer_nada": 0.4
+  },
+  "horario=tarde|temperatura=confortavel|luminosidade=baixa|chuva=False|presenca_interna=True|presenca_externa=False|umidade=adequada": {
+    "abrir_janela": -0.048,
+    "ligar_lampada": 0.4,
+    "nao_fazer_nada": 0.44608
+  },
+  "horario=tarde|temperatura=confortavel|luminosidade=baixa|chuva=False|presenca_interna=True|presenca_externa=False|umidade=alta": {
+    "abrir_janela": -0.12,
+    "ligar_lampada": 0.4,
+    "nao_fazer_nada": 0.12
+  },
+  "horario=tarde|temperatura=confortavel|luminosidade=baixa|chuva=False|presenca_interna=True|presenca_externa=False|umidade=baixa": {
+    "ligar_lampada": -0.12,
+    "ligar_umidificador": 0.4
+  },
+  "horario=tarde|temperatura=fria|luminosidade=alta|chuva=False|presenca_interna=True|presenca_externa=False|umidade=baixa": {
+    "abrir_janela": -0.192,
+    "ligar_umidificador": 0.64
+  },
+  "horario=tarde|temperatura=fria|luminosidade=baixa|chuva=False|presenca_interna=False|presenca_externa=False|umidade=adequada": {
+    "abrir_janela": 0.64,
+    "nao_fazer_nada": -0.192
+  },
+  "horario=tarde|temperatura=fria|luminosidade=baixa|chuva=False|presenca_interna=False|presenca_externa=False|umidade=alta": {
+    "abrir_janela": 0.12,
+    "nao_fazer_nada": 0.328
+  },
+  "horario=tarde|temperatura=fria|luminosidade=baixa|chuva=False|presenca_interna=False|presenca_externa=False|umidade=baixa": {
+    "abrir_janela": 0.64,
+    "nao_fazer_nada": -0.192
+  },
+  "horario=tarde|temperatura=fria|luminosidade=baixa|chuva=False|presenca_interna=True|presenca_externa=False|umidade=adequada": {
+    "abrir_janela": 0.5584,
+    "ligar_lampada": 0.4,
+    "nao_fazer_nada": -0.2352
+  },
+  "horario=tarde|temperatura=fria|luminosidade=baixa|chuva=False|presenca_interna=True|presenca_externa=False|umidade=alta": {
+    "abrir_janela": -0.12,
+    "ligar_lampada": 0.4,
+    "nao_fazer_nada": 0.12
+  },
+  "horario=tarde|temperatura=fria|luminosidade=baixa|chuva=False|presenca_interna=True|presenca_externa=False|umidade=baixa": {
+    "ligar_lampada": -0.12,
+    "ligar_umidificador": 0.4
+  },
+  "horario=tarde|temperatura=quente|luminosidade=alta|chuva=False|presenca_interna=False|presenca_externa=False|umidade=adequada": {
+    "abrir_janela": 0.854848,
+    "ligar_ar": -0.20928
+  },
+  "horario=tarde|temperatura=quente|luminosidade=alta|chuva=False|presenca_interna=False|presenca_externa=False|umidade=alta": {
+    "abrir_janela": 0.64,
+    "ligar_ar": -0.192
+  },
+  "horario=tarde|temperatura=quente|luminosidade=alta|chuva=False|presenca_interna=False|presenca_externa=False|umidade=baixa": {
+    "abrir_janela": 0.439859,
+    "ligar_ar": 0.240545
+  },
+  "horario=tarde|temperatura=quente|luminosidade=alta|chuva=False|presenca_interna=False|presenca_externa=True|umidade=adequada": {
+    "fechar_janela": -0.192,
+    "ligar_ar": 0.64
+  },
+  "horario=tarde|temperatura=quente|luminosidade=alta|chuva=False|presenca_interna=True|presenca_externa=False|umidade=adequada": {
+    "abrir_janela": 0.257636,
+    "ligar_ar": 0.442166
+  },
+  "horario=tarde|temperatura=quente|luminosidade=alta|chuva=False|presenca_interna=True|presenca_externa=False|umidade=alta": {
+    "abrir_janela": 0.437388,
+    "ligar_ar": 0.261088
+  },
+  "horario=tarde|temperatura=quente|luminosidade=alta|chuva=False|presenca_interna=True|presenca_externa=False|umidade=baixa": {
+    "abrir_janela": 0.063449,
+    "ligar_ar": 0.636222
+  },
+  "horario=tarde|temperatura=quente|luminosidade=alta|chuva=False|presenca_interna=True|presenca_externa=True|umidade=adequada": {
+    "fechar_janela": -0.12,
+    "ligar_ar": 0.4
+  },
+  "horario=tarde|temperatura=quente|luminosidade=alta|chuva=False|presenca_interna=True|presenca_externa=True|umidade=baixa": {
+    "fechar_janela": -0.2352,
+    "ligar_ar": 0.784
+  },
+  "horario=tarde|temperatura=quente|luminosidade=alta|chuva=True|presenca_interna=False|presenca_externa=False|umidade=adequada": {
+    "fechar_janela": -0.12,
+    "ligar_ar": 0.4
+  },
+  "horario=tarde|temperatura=quente|luminosidade=alta|chuva=True|presenca_interna=False|presenca_externa=False|umidade=alta": {
+    "fechar_janela": -0.192,
+    "ligar_ar": 0.64
+  },
+  "horario=tarde|temperatura=quente|luminosidade=alta|chuva=True|presenca_interna=False|presenca_externa=False|umidade=baixa": {
+    "fechar_janela": -0.12,
+    "ligar_ar": 0.4
+  },
+  "horario=tarde|temperatura=quente|luminosidade=alta|chuva=True|presenca_interna=True|presenca_externa=False|umidade=adequada": {
+    "fechar_janela": -0.26112,
+    "ligar_ar": 0.8704
+  },
+  "horario=tarde|temperatura=quente|luminosidade=alta|chuva=True|presenca_interna=True|presenca_externa=False|umidade=alta": {
+    "fechar_janela": -0.2352,
+    "ligar_ar": 0.784
+  },
+  "horario=tarde|temperatura=quente|luminosidade=alta|chuva=True|presenca_interna=True|presenca_externa=False|umidade=baixa": {
+    "fechar_janela": -0.192,
+    "ligar_ar": 0.64
+  },
+  "horario=tarde|temperatura=quente|luminosidade=alta|chuva=True|presenca_interna=True|presenca_externa=True|umidade=adequada": {
+    "fechar_janela": -0.12,
+    "ligar_ar": 0.4
+  },
+  "horario=tarde|temperatura=quente|luminosidade=baixa|chuva=False|presenca_interna=False|presenca_externa=False|umidade=adequada": {
+    "abrir_janela": -0.1488,
+    "ligar_ar": 0.75808
+  },
+  "horario=tarde|temperatura=quente|luminosidade=baixa|chuva=False|presenca_interna=False|presenca_externa=False|umidade=alta": {
+    "abrir_janela": 0.766144,
+    "ligar_ar": -0.098803
+  },
+  "horario=tarde|temperatura=quente|luminosidade=baixa|chuva=False|presenca_interna=False|presenca_externa=False|umidade=baixa": {
+    "abrir_janela": 0.884052,
+    "ligar_ar": -0.186592
+  },
+  "horario=tarde|temperatura=quente|luminosidade=baixa|chuva=False|presenca_interna=False|presenca_externa=True|umidade=adequada": {
+    "fechar_janela": -0.192,
+    "ligar_ar": 0.64
+  },
+  "horario=tarde|temperatura=quente|luminosidade=baixa|chuva=False|presenca_interna=False|presenca_externa=True|umidade=alta": {
+    "fechar_janela": -0.12,
+    "ligar_ar": 0.4
+  },
+  "horario=tarde|temperatura=quente|luminosidade=baixa|chuva=False|presenca_interna=False|presenca_externa=True|umidade=baixa": {
+    "fechar_janela": -0.192,
+    "ligar_ar": 0.64
+  },
+  "horario=tarde|temperatura=quente|luminosidade=baixa|chuva=False|presenca_interna=True|presenca_externa=False|umidade=adequada": {
+    "ligar_ar": 0.972006,
+    "ligar_lampada": -0.192,
+    "ligar_ventilador": -0.267341
+  },
+  "horario=tarde|temperatura=quente|luminosidade=baixa|chuva=False|presenca_interna=True|presenca_externa=False|umidade=alta": {
+    "ligar_ar": 0.972006,
+    "ligar_lampada": -0.12,
+    "ligar_ventilador": -0.280405
+  },
+  "horario=tarde|temperatura=quente|luminosidade=baixa|chuva=False|presenca_interna=True|presenca_externa=False|umidade=baixa": {
+    "ligar_ar": 0.972006,
+    "ligar_lampada": -0.12,
+    "ligar_umidificador": -0.12,
+    "ligar_ventilador": -0.251167
+  },
+  "horario=tarde|temperatura=quente|luminosidade=baixa|chuva=False|presenca_interna=True|presenca_externa=True|umidade=adequada": {
+    "fechar_janela": -0.276672,
+    "ligar_ar": 0.92224
+  },
+  "horario=tarde|temperatura=quente|luminosidade=baixa|chuva=False|presenca_interna=True|presenca_externa=True|umidade=alta": {
+    "fechar_janela": -0.192,
+    "ligar_ar": 0.64
+  },
+  "horario=tarde|temperatura=quente|luminosidade=baixa|chuva=False|presenca_interna=True|presenca_externa=True|umidade=baixa": {
+    "fechar_janela": -0.2352,
+    "ligar_ar": 0.784
+  },
+  "horario=tarde|temperatura=quente|luminosidade=baixa|chuva=True|presenca_interna=False|presenca_externa=False|umidade=adequada": {
+    "fechar_janela": -0.192,
+    "ligar_ar": 0.64
+  },
+  "horario=tarde|temperatura=quente|luminosidade=baixa|chuva=True|presenca_interna=False|presenca_externa=False|umidade=baixa": {
+    "fechar_janela": -0.2352,
+    "ligar_ar": 0.784
+  },
+  "horario=tarde|temperatura=quente|luminosidade=baixa|chuva=True|presenca_interna=True|presenca_externa=False|umidade=adequada": {
+    "fechar_janela": -0.286003,
+    "ligar_ar": 0.953344
+  },
+  "horario=tarde|temperatura=quente|luminosidade=baixa|chuva=True|presenca_interna=True|presenca_externa=False|umidade=alta": {
+    "fechar_janela": -0.192,
+    "ligar_ar": 0.64
+  },
+  "horario=tarde|temperatura=quente|luminosidade=baixa|chuva=True|presenca_interna=True|presenca_externa=False|umidade=baixa": {
+    "fechar_janela": -0.26112,
+    "ligar_ar": 0.8704
+  },
+  "horario=tarde|temperatura=quente|luminosidade=baixa|chuva=True|presenca_interna=True|presenca_externa=True|umidade=alta": {
+    "fechar_janela": -0.12,
+    "ligar_ar": 0.4
+  },
+  "horario=tarde|temperatura=quente|luminosidade=baixa|chuva=True|presenca_interna=True|presenca_externa=True|umidade=baixa": {
+    "fechar_janela": -0.192,
+    "ligar_ar": 0.64
+  }
+}

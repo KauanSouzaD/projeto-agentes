@@ -1,13 +1,18 @@
 """Servidor Flask do quarto inteligente."""
 
+import random
+import threading
+import time
 from dataclasses import asdict
+from functools import partial
 
 from flask import Flask, jsonify, request
 import requests
 
 import services
-from config import estado_quarto, placas_registradas
+from config import estado_quarto, placas_registradas, SIMULACAO
 from interface_bp import inter_bp
+from simulador import prever_estado, avaliar_resultado
 
 
 app = Flask(__name__)
@@ -51,6 +56,32 @@ def monitoring():
     except requests.exceptions.RequestException as error:
         return jsonify({"erro": f"Falha no atuador: {error}"}), 503
     return jsonify({"message": "Dados processados", "decisao": asdict(decision) if decision else None})
+
+
+def treinar_em_segundo_plano():
+    """Gera cenários aleatórios continuamente e deixa o agente treinar
+    sozinho contra o simulador, sem nenhuma intervenção humana."""
+    while True:
+        temperatura_externa = random.uniform(10, 38)
+        estado = {
+            "temperatura_atual": random.uniform(18, 34),
+            "umidade_atual": random.uniform(20, 80),
+            "luminosidade": random.uniform(0, 100),
+            "chuva": random.random() < 0.15,
+            "presenca_interna": random.random() < 0.7,
+            "presenca_externa": random.random() < 0.1,
+            "janela_aberta": False, "ar_ligado": False, "ventilador": 0,
+            "lampada_ligada": 0, "umidificador": 0,
+        }
+        prever = partial(prever_estado, temperatura_externa=temperatura_externa)
+        services.agente_adaptativo.decidir_e_agir(
+            estado, executor=lambda acao: None,
+            simulador=(prever, avaliar_resultado),
+        )
+        time.sleep(0.05)
+
+if SIMULACAO:
+    threading.Thread(target=treinar_em_segundo_plano, daemon=True).start()
 
 
 if __name__ == "__main__":

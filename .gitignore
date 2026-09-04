@@ -1,0 +1,4 @@
+.venv/
+__pycache__/
+*.pyc
+data/q_table.json
